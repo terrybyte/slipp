@@ -3,6 +3,7 @@
 # connection - using git bash
 
 ssh -i "c:\Users\terry\.ssh\MyKeyPair.pem" ubuntu@ec2-54-191-35-228.us-west-2.compute.amazonaws.com
+ssh -i "c:\Users\terrybyte\.ssh\aws_MyKeyPair.pem" ubuntu@ec2-54-191-35-228.us-west-2.compute.amazonaws.com
 
 # 각 계정별 UTF-8 인코딩 설정
 • sudo locale-gen ko_KR.EUC-KR ko_KR.UTF-8
@@ -26,7 +27,7 @@ wget --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download
 $ gunzip jdk-8u121-linux-x64.tar.gz
 $ tar -xvf jdk-8u121-linux-x64.tar
 
-# simbolic link - ubuntu ln 
+# simbolic link - ubuntu ln
 $ ln -s jdk1.8.0_121/ java
 
 # java path setting
@@ -60,6 +61,14 @@ $ java -jar ****.1.0.jar
  : Custom TCP Rule TCP 8080 0.0.0.0/0
 
 # background run
-$ java -jar ****.1.0.jar $ 
+$ java -jar ****.1.0.jar $
 
 ## 2-0. 두 번째 반복주기 학습목표 및 과정 설명 #############################
+* 동적인 HTML 웹 페이지 개발
+* Spring mvc 기반 개발
+
+2-1. controller 추가 및 mustache에 인자 전달
+2-2. 회원가입 페이지 구현
+2-3. 사용자 목록 페이지 구현
+2-4. 원격 서버에 소스 코드 배포
+2-5. 이전 상태로 원복 후 반복 구현
