@@ -29,7 +29,7 @@
 						class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="#">TerryByte</a>
+				<a class="navbar-brand" href="/welcome">TerryByte</a>
 			</div>
 
 			<!-- Collect the nav links, forms, and other content for toggling -->
@@ -38,7 +38,7 @@
 				<ul class="nav navbar-nav">
 					<!-- <li class="active"><a href="/form.html">Sign Up<span class="sr-only">(current)</span></a></li> -->
 					<li><a href="/form.html">회원 가입</a></li>
-					<li><a href="/list.html">사용자 목록</a></li>
+					<li class="active"><a href="#">사용자 목록</a></li>
 				</ul>
 			</div>
 			<!-- /.navbar-collapse -->
@@ -57,16 +57,13 @@
 				</tr>
 			</thead>
 			<tbody>
+				{{#users}}
 				<tr>
-					<th></th>
-					<td></td>
-					<td></td>
+					<th scope="row">{{id}}</th>
+					<td>{{name}}</td>
+					<td>{{email}}</td>
 				</tr>
-				<tr>
-					<th></th>
-					<td></td>
-					<td></td>
-				</tr>
+				{{/users}}
 			</tbody>
 		</table>
 	</div>

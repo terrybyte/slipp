@@ -12,14 +12,14 @@ import net.slipp.domain.User;
 
 @Controller
 public class UserController {
-
+	
 	private List<User> users = new ArrayList<User>();
 	
 	@PostMapping("/create")
-	public String create(User user) {
+	public String create(User user, Model model) {
 		System.out.println(user.toString());
 		users.add(user);
-		return "index";
+		return "redirect:list";
 	}
 	
 	@GetMapping("/list")
