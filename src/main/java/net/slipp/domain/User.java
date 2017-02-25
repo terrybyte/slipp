@@ -1,8 +1,20 @@
 package net.slipp.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
 public class User {
 
-	private String id;
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@Column(nullable=false, length=50)
+	private String userID;
+	
 	private String password;
 	private String name;
 	private String email;
@@ -11,16 +23,12 @@ public class User {
 		super();
 	}
 
-	public User(String id, String password, String name, String email) {
-		super();
+	public void setId(Long id) {
 		this.id = id;
-		this.password = password;
-		this.name = name;
-		this.email = email;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setUserID(String userID) {
+		this.userID = userID;
 	}
 
 	public void setPassword(String password) {
@@ -35,8 +43,12 @@ public class User {
 		this.email = email;
 	}
 
-	public String getId() {
+	public Long getId() {
 		return id;
+	}
+
+	public String getUserID() {
+		return userID;
 	}
 
 	public String getPassword() {
@@ -53,7 +65,8 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", password=" + password + ", name=" + name + ", email=" + email + "]";
+		return "User [id=" + id + ", userID=" + userID + ", password=" + password + ", name=" + name + ", email="
+				+ email + "]";
 	}
 
 }
