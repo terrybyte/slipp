@@ -43,8 +43,7 @@ public class UserController {
 	//회원수정 페이지
 	@GetMapping("/{id}/form")
 	public String updateForm(@PathVariable Long id, Model model) {
-		User user = userRepository.findOne(id);
-		model.addAttribute("user", user);
+		model.addAttribute("user", userRepository.findOne(id));
 		return "/user/updateForm";
 	}
 	
