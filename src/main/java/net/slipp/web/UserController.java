@@ -71,17 +71,55 @@ public class UserController {
 	
 	//회원수정 페이지
 	@GetMapping("/{id}/form")
-	public String updateForm(@PathVariable Long id, Model model) {
-		User user = userRepository.findOne(id);
+	public String updateForm1(@PathVariable Long id, Model model, HttpSession session) {
+		User sessionUser = (User) session.getAttribute("session");
+		
+		if (sessionUser == null) {
+			return "redirect:/users/loginForm";
+		}
+		
+		if (!id.equals(sessionUser.getId())) {
+			throw new IllegalStateException("invalid session!");
+		}
+		
+		User user = userRepository.findOne(sessionUser.getId());
+		model.addAttribute("user", user);
+		return "/user/updateForm";
+	}
+	
+	@GetMapping("/updateForm")
+	public String updateForm(Model model, HttpSession session) {
+		User sessionUser = (User) session.getAttribute("session");
+		
+		if (sessionUser == null) {
+			return "redirect:/users/loginForm";
+		}
+		
+		User user = userRepository.findOne(sessionUser.getId());
 		model.addAttribute("user", user);
 		return "/user/updateForm";
 	}
 	
 	//회원수정
 	@PutMapping("/{id}")
-	public String update(@PathVariable Long id, User updateUser, Model model) {
+	public String update1(@PathVariable Long id, User updateUser, Model model) {
 		User user = userRepository.findOne(id);
 		user.update(updateUser);
+		userRepository.save(user);
+		return "redirect:/users";
+	}
+	
+	//회원수정
+	@PutMapping("/udpate")
+	public String update(User updatedUser, Model model, HttpSession session) {
+		User userSession = (User) session.getAttribute("session");
+		
+		if (userSession == null) {
+			return "redirect:/users/loginForm";
+		}
+		
+		User user = userRepository.findOne(userSession.getId());
+		user.update(updatedUser);
 		userRepository.save(user);
 		return "redirect:/users";
 	}
