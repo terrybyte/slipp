@@ -20,6 +20,12 @@ public class UserController {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.removeAttribute("session");
+		return "redirect:/";
+	}
 
 	@GetMapping("/loginForm")
 	public String loginForm(){
