@@ -47,12 +47,16 @@ public class User {
 		return id;
 	}
 
+	public boolean isMatchId(Long newId){
+		if (newId == null) {
+			return false;
+		}
+		
+		return newId.equals(id);
+	}
+	
 	public String getUserID() {
 		return userID;
-	}
-
-	public String getPassword() {
-		return password;
 	}
 
 	public String getName() {
@@ -63,6 +67,14 @@ public class User {
 		return email;
 	}
 
+	public boolean isMatchPass(String newPass) {
+		if (newPass == null) {
+			return false;
+		}
+		
+		return newPass.equals(password);
+	}
+	
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", userID=" + userID + ", password=" + password + ", name=" + name + ", email="

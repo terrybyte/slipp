@@ -23,7 +23,7 @@ public class UserController {
 	
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {
-		session.removeAttribute("session");
+		session.removeAttribute(HttpSessionUtils.USER_SESSION_KEY);
 		return "redirect:/";
 	}
 
@@ -36,17 +36,15 @@ public class UserController {
 	public String login(String userID, String password, HttpSession session) {
 		User user = userRepository.findByUserID(userID);
 		
-		if (user == null || !password.equals(user.getPassword())) {
+		if (user == null || !user.isMatchPass(password)) {
 			return "redirect:/users/loginForm";
 		}
 		
 		//session
-		session.setAttribute("session", user);
+		session.setAttribute(HttpSessionUtils.USER_SESSION_KEY, user);
 		
 		return "redirect:/";
 	}
-	
-	
 	
 	//회원가입 등록
 	@PostMapping("")
@@ -69,35 +67,52 @@ public class UserController {
 		return "/user/form";
 	}
 	
-	//회원수정 페이지
-	@GetMapping("/{id}/form")
-	public String updateForm1(@PathVariable Long id, Model model, HttpSession session) {
-		User sessionUser = (User) session.getAttribute("session");
-		
-		if (sessionUser == null) {
+	
+	//개인정보 수정 폼
+	@GetMapping("/updateForm")
+	public String updateForm(Model model, HttpSession session) {
+		if (!HttpSessionUtils.isLogin(session)) {
 			return "redirect:/users/loginForm";
 		}
 		
-		if (!id.equals(sessionUser.getId())) {
-			throw new IllegalStateException("invalid session!");
-		}
+		User sessionUser = HttpSessionUtils.getUserFromSession(session);
 		
 		User user = userRepository.findOne(sessionUser.getId());
 		model.addAttribute("user", user);
 		return "/user/updateForm";
 	}
 	
-	@GetMapping("/updateForm")
-	public String updateForm(Model model, HttpSession session) {
-		User sessionUser = (User) session.getAttribute("session");
-		
-		if (sessionUser == null) {
+	//개인정보 수정 폼
+	@GetMapping("/{id}/form")
+	public String updateForm1(@PathVariable Long id, Model model, HttpSession httpSession) {
+		if (!HttpSessionUtils.isLogin(httpSession)) {
 			return "redirect:/users/loginForm";
 		}
 		
-		User user = userRepository.findOne(sessionUser.getId());
+		User sessionUser = HttpSessionUtils.getUserFromSession(httpSession);
+		
+		if (!sessionUser.isMatchId(id)) {
+			throw new IllegalStateException("invalid session!");
+		}
+		
+		User user = userRepository.findOne(id);
 		model.addAttribute("user", user);
 		return "/user/updateForm";
+	}
+	
+	//회원수정
+	@PutMapping("/udpate")
+	public String update(User updatedUser, Model model, HttpSession session) {
+		if (!HttpSessionUtils.isLogin(session)) {
+			return "redirect:/users/loginForm";
+		}
+		
+		User sessionUser = HttpSessionUtils.getUserFromSession(session);
+		
+		User user = userRepository.findOne(sessionUser.getId());
+		user.update(updatedUser);
+		userRepository.save(user);
+		return "redirect:/users";
 	}
 	
 	//회원수정
@@ -105,21 +120,6 @@ public class UserController {
 	public String update1(@PathVariable Long id, User updateUser, Model model) {
 		User user = userRepository.findOne(id);
 		user.update(updateUser);
-		userRepository.save(user);
-		return "redirect:/users";
-	}
-	
-	//회원수정
-	@PutMapping("/udpate")
-	public String update(User updatedUser, Model model, HttpSession session) {
-		User userSession = (User) session.getAttribute("session");
-		
-		if (userSession == null) {
-			return "redirect:/users/loginForm";
-		}
-		
-		User user = userRepository.findOne(userSession.getId());
-		user.update(updatedUser);
 		userRepository.save(user);
 		return "redirect:/users";
 	}
