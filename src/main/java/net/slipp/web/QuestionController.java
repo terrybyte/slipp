@@ -23,6 +23,7 @@ public class QuestionController {
 	@Autowired
 	private QuestionRepository repository;
 	
+	//등록 폼
 	@GetMapping("/form")
 	public String form(HttpSession session) {
 		if (!HttpSessionUtils.isLogin(session)) {
@@ -31,6 +32,7 @@ public class QuestionController {
 		return "/qna/form";
 	}
 	
+	//qna 등록
 	@PostMapping("")
 	public String regist(String title, String contents, HttpSession httpSession){
 		if (!HttpSessionUtils.isLogin(httpSession)) {
@@ -44,32 +46,64 @@ public class QuestionController {
 		return "redirect:/";
 	}
 	
-	
+	//qna 상세
 	@GetMapping("/{id}")
 	public String show(@PathVariable Long id, Model model) {
 		model.addAttribute("question", repository.findOne(id));
 		return "/qna/show";
 	}
 	
-	//업데이트 폼
+	//질문 업데이트 폼
 	@GetMapping("/{id}/form")
-	public String updateForm(@PathVariable Long id, Model model) {
-		model.addAttribute("question", repository.findOne(id));
+	public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) {
+		if (!HttpSessionUtils.isLogin(httpSession)) {
+			return "redirect:/users/loginForm";
+		}
+		
+		User loginUser = HttpSessionUtils.getUserFromSession(httpSession);
+		Question question = repository.findOne(id);
+		
+		if (!question.isSameWriter(loginUser)) {
+			return "redirect:/"; 
+		}
+		
+		model.addAttribute("question", question);
 		return "/qna/updateForm";
 	}
 	
-	//업데이트
+	//질문 업데이트
 	@PutMapping("/{id}")
-	public String updateForm(@PathVariable Long id, String title, String contents, Model model) {
+	public String updateForm(@PathVariable Long id, String title, String contents, Model model, HttpSession httpSession) {
+		if (!HttpSessionUtils.isLogin(httpSession)) {
+			return "redirect:/users/loginForm";
+		}
+		
+		User loginUser = HttpSessionUtils.getUserFromSession(httpSession);
 		Question question = repository.findOne(id);
+		
+		if (!question.isSameWriter(loginUser)) {
+			return "redirect:/"; 
+		}
+		
 		question.update(title, contents);
 		repository.save(question);
-//		return "redirect:/questions/"+id;
 		return String.format("redirect:/questions/%d", id);
 	}
 	
+	//질문 삭제
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable Long id) {
+	public String delete(@PathVariable Long id, HttpSession httpSession) {
+		if (!HttpSessionUtils.isLogin(httpSession)) {
+			return "redirect:/users/loginForm";
+		}
+		
+		User loginUser = HttpSessionUtils.getUserFromSession(httpSession);
+		Question question = repository.findOne(id);
+		
+		if (!question.isSameWriter(loginUser)) {
+			return "redirect:/"; 
+		}
+		
 		repository.delete(id);
 		return "redirect:/";
 	}

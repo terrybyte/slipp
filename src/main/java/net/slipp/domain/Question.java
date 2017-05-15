@@ -17,15 +17,15 @@ public class Question {
 	@GeneratedValue
 	private Long id;
 
-//	private String writer;
+	// private String writer;
 	private String title;
 	private String contents;
-	private LocalDateTime createDate; //java8
+	private LocalDateTime createDate; // java8
 
 	@ManyToOne
-	@JoinColumn(foreignKey=@ForeignKey(name="fk_question_writer"))
+	@JoinColumn(foreignKey = @ForeignKey(name = "fk_question_writer"))
 	private User writer;
-	
+
 	public Question() {
 	}
 
@@ -36,9 +36,9 @@ public class Question {
 		this.createDate = LocalDateTime.now();
 	}
 
-//	public void setWriter(String writer) {
-//		this.writer = writer;
-//	}
+	// public void setWriter(String writer) {
+	// this.writer = writer;
+	// }
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -59,9 +59,14 @@ public class Question {
 		this.title = title;
 		this.contents = contents;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Question [id=" + id + ", writer=" + writer + ", title=" + title + ", contents=" + contents + "]";
 	}
+
+	public boolean isSameWriter(User loginUser) {
+		return this.writer.equals(loginUser);
+	}
+
 }
