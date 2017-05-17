@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.slipp.domain.Question;
 import net.slipp.domain.QuestionRepository;
@@ -55,57 +56,62 @@ public class QuestionController {
 	
 	//질문 업데이트 폼
 	@GetMapping("/{id}/form")
-	public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession) {
-		if (!HttpSessionUtils.isLogin(httpSession)) {
+	public String updateForm(@PathVariable Long id, Model model, HttpSession httpSession
+			, RedirectAttributes redirectAttributes) {
+		try 
+		{
+			Question question = repository.findOne(id);
+			hasPermission(httpSession, question);
+			model.addAttribute("question", question);
+			return "/qna/updateForm";
+		} catch (IllegalStateException e) {
+			redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
 			return "redirect:/users/loginForm";
+		}
+	}
+	
+	private void hasPermission(HttpSession httpSession, Question question) {
+		if (!HttpSessionUtils.isLogin(httpSession)) {
+			throw new IllegalStateException("로그인이 필요합니다.");
 		}
 		
 		User loginUser = HttpSessionUtils.getUserFromSession(httpSession);
-		Question question = repository.findOne(id);
 		
 		if (!question.isSameWriter(loginUser)) {
-			return "redirect:/"; 
+			throw new IllegalStateException("자신의 글만 수정, 삭제할 수 있습니다.");
 		}
-		
-		model.addAttribute("question", question);
-		return "/qna/updateForm";
 	}
 	
 	//질문 업데이트
 	@PutMapping("/{id}")
-	public String updateForm(@PathVariable Long id, String title, String contents, Model model, HttpSession httpSession) {
-		if (!HttpSessionUtils.isLogin(httpSession)) {
+	public String updateForm(@PathVariable Long id, String title, String contents
+			, Model model, HttpSession httpSession, RedirectAttributes redirectAttributes) {
+		try 
+		{
+			Question question = repository.findOne(id);
+			hasPermission(httpSession, question);
+			question.update(title, contents);
+			repository.save(question);
+			return String.format("redirect:/questions/%d", id);
+		} catch (IllegalStateException e) {
+			redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
 			return "redirect:/users/loginForm";
 		}
-		
-		User loginUser = HttpSessionUtils.getUserFromSession(httpSession);
-		Question question = repository.findOne(id);
-		
-		if (!question.isSameWriter(loginUser)) {
-			return "redirect:/"; 
-		}
-		
-		question.update(title, contents);
-		repository.save(question);
-		return String.format("redirect:/questions/%d", id);
 	}
 	
 	//질문 삭제
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable Long id, HttpSession httpSession) {
-		if (!HttpSessionUtils.isLogin(httpSession)) {
+	public String delete(@PathVariable Long id, HttpSession httpSession, RedirectAttributes redirectAttributes) {
+		try 
+		{
+			Question question = repository.findOne(id);
+			hasPermission(httpSession, question);
+			repository.delete(id);
+			return "redirect:/";
+		} catch (IllegalStateException e) {
+			redirectAttributes.addFlashAttribute("errorMessage", e.getLocalizedMessage());
 			return "redirect:/users/loginForm";
 		}
-		
-		User loginUser = HttpSessionUtils.getUserFromSession(httpSession);
-		Question question = repository.findOne(id);
-		
-		if (!question.isSameWriter(loginUser)) {
-			return "redirect:/"; 
-		}
-		
-		repository.delete(id);
-		return "redirect:/";
 	}
 	
 }
