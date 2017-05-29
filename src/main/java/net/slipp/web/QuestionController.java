@@ -63,7 +63,7 @@ public class QuestionController {
 		Question question = repository.findOne(id);
 		Result result = valid(httpSession, question);
 		
-		if (!result.isVaild()) {
+		if (!result.isValid()) {
 			redirectAttributes.addFlashAttribute("errorMessage", result.getErrorMessage());
 			return "redirect:/users/loginForm";
 		}
@@ -108,7 +108,7 @@ public class QuestionController {
 		Question question = repository.findOne(id);
 		Result result = valid(httpSession, question);
 		
-		if (!result.isVaild()) {
+		if (!result.isValid()) {
 			redirectAttributes.addFlashAttribute("errorMessage", result.getErrorMessage());
 			return "redirect:/users/loginForm";
 		}
@@ -124,7 +124,7 @@ public class QuestionController {
 		Question question = repository.findOne(id);
 		Result result = valid(httpSession, question);
 		
-		if (!result.isVaild()) {
+		if (!result.isValid()) {
 			redirectAttributes.addFlashAttribute("errorMessage", result.getErrorMessage());
 			return "redirect:/users/loginForm";
 		}

@@ -2,11 +2,11 @@ package net.slipp.domain;
 
 public class Result {
 
-	private boolean vaild;
+	private boolean valid;
 	private String errorMessage;
 	
-	public boolean isVaild() {
-		return vaild;
+	public boolean isValid() {
+		return valid;
 	}
 	
 	public String getErrorMessage() {
@@ -14,7 +14,7 @@ public class Result {
 	}
 	
 	private Result(boolean valid, String errorMessage) {
-		this.vaild = valid;
+		this.valid = valid;
 		this.errorMessage = errorMessage;
 	}
 	

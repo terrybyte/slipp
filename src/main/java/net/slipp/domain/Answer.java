@@ -11,23 +11,30 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 public class Answer {
 
 	@Id
 	@GeneratedValue
+	@JsonProperty
 	private Long id;
 
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_writer"))
+	@JsonProperty
 	private User writer;
 
 	@ManyToOne
 	@JoinColumn(foreignKey = @ForeignKey(name = "fk_answer_question"))
+	@JsonProperty
 	private Question question;
 	
 	@Lob
+	@JsonProperty
 	private String contents;
+	
 	private LocalDateTime createDate; // java8
 
 	public String getCreateDate() {
@@ -76,6 +83,10 @@ public class Answer {
 	public String toString() {
 		return "Answer [id=" + id + ", writer=" + writer + ", contents=" + contents + ", createDate=" + createDate
 				+ "]";
+	}
+
+	public boolean isSameWriter(User loginUser) {
+		return loginUser.equals(this.writer);
 	}
 
 }
